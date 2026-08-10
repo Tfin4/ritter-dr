@@ -210,7 +210,55 @@ function setD(k2,v){S.deal[k2]=N(v);save();render();}
 function resetDeal(){S.deal=JSON.parse(JSON.stringify(SEED.deal));save();render();toast("Deal reset");}
 function resetAll(){if(confirm("Discard local edits and go back to the published version?")){localStorage.removeItem(KEY);load();render();toast("Reset");}}
 function expJSON(){var b=new Blob([JSON.stringify(S,null,2)],{type:"application/json"});var a=document.createElement("a");a.href=URL.createObjectURL(b);a.download="ritter-dr-data.json";a.click();}
-function render(){renderOv();renderBud();renderExp();renderFund();renderSch();renderDeal();}
+var SC={lr:60000,la:645000,fr:116000,fa:679990};
+try{var sc=localStorage.getItem("ritter-scen");if(sc)SC=JSON.parse(sc);}catch(e){}
+function scenCalc(rehab,arv){
+ var d=S.deal,t=totals(),f=funding(),m=S.fmeta;
+ var remain=Math.max(0,rehab-t.paid);
+ var drawable=Math.min(remain,N(m.facility));
+ var fees=Math.max(1,Math.ceil(drawable/20000))*75;
+ var proceeds=Math.max(0,drawable-N(m.advanceLeft)-N(m.selfLeft)-fees)+N(m.holdback);
+ var avail=f.cash+proceeds;
+ var acq=N(d.purchase)*N(d.acqPct)/100;
+ var base=N(d.purchase)*N(d.ltc)/100,rl=rehab*N(d.rehabFin)/100,loan=base+rl;
+ var pts=loan*N(d.points)/100;
+ var interest=(base+rl*0.5)*N(d.rate)/100*N(d.months)/12;
+ var carry=(N(d.taxes)+N(d.insurance)+N(d.utilities)+N(d.other))*N(d.months);
+ var allIn=N(d.purchase)+acq+rehab+pts+interest+carry;
+ var sell=arv*N(d.sellPct)/100;var profit=arv-sell-allIn;var cashIn=allIn-loan;
+ return{rehab:rehab,arv:arv,remain:remain,proceeds:proceeds,avail:avail,gap:avail-remain,allIn:allIn,profit:profit,margin:arv?profit/arv*100:0,cashIn:cashIn,roi:cashIn?profit/cashIn*100:0};
+}
+function renderScen(){
+ ["lr","la","fr","fa"].forEach(function(k2){var el=$("#s_"+k2);if(el){el.value=SC[k2];el.onchange=function(){SC[k2]=N(el.value);try{localStorage.setItem("ritter-scen",JSON.stringify(SC));}catch(e){}renderScen();};}});
+ var A=scenCalc(N(SC.lr),N(SC.la)),B=scenCalc(N(SC.fr),N(SC.fa)),f=funding(),t=totals();
+ function r(l,v,cl){return '<div class="row"><span>'+l+'</span><b class="'+(cl||"")+'">'+v+'</b></div>';}
+ function hr(){return '<div style="height:1px;background:var(--line);margin:9px 0"></div>';}
+ function card(nm,tag,x,pc){
+  return '<div class="card"><h3>'+nm+' <span class="pill '+pc+'">'+tag+'</span></h3>'+
+  r("Rehab budget",money(x.rehab))+r("Already paid",money(t.paid))+r("Still to spend",money(x.remain))+hr()+
+  r("Cash on hand",money(f.cash))+r("Net draw proceeds ahead",money(x.proceeds))+
+  '<div class="row tot"><span>Funding available</span><b>'+money(x.avail)+'</b></div>'+
+  '<div class="row tot"><span>'+(x.gap>=0?"Surplus":"Shortfall")+'</span><b class="'+(x.gap>=0?"up":"down")+'" style="font-size:20px">'+(x.gap<0?"-":"")+money(Math.abs(x.gap))+'</b></div>'+hr()+
+  r("Sale price assumed",money(x.arv))+r("All-in cost",money(x.allIn))+
+  '<div class="row tot"><span>Profit</span><b class="'+(x.profit>=0?"up":"down")+'" style="font-size:20px">'+money(x.profit)+'</b></div>'+
+  r("Margin on sale price",x.margin.toFixed(1)+"%")+r("Cash-on-cash",Math.round(x.roi)+"%")+r("Your cash in deal",money(x.cashIn))+'</div>';
+ }
+ $("#scenOut").innerHTML=card("Lean scope","FUNDED",A,A.gap>=0?"p-paid":"p-due").replace(">FUNDED<",">"+(A.gap>=0?"FUNDED":"SHORT")+"<")+
+  card("Full scope","FUNDED",B,B.gap>=0?"p-paid":"p-due").replace(">FUNDED<",">"+(B.gap>=0?"FUNDED":"SHORT")+"<");
+ var dp=B.profit-A.profit,dc=B.remain-A.remain;
+ var v="";
+ v+='<div class="row"><span>Extra spend, full vs lean</span><b>'+money(dc)+'</b></div>';
+ v+='<div class="row"><span>Extra profit it buys</span><b class="'+(dp>=0?"up":"down")+'">'+(dp<0?"-":"")+money(Math.abs(dp))+'</b></div>';
+ v+='<div class="row"><span>Return on the extra spend</span><b class="'+(dp>=0?"up":"down")+'">'+(dc?Math.round(dp/dc*100):0)+'%</b></div>';
+ var msg;
+ if(A.gap>=0&&B.gap<0){msg="Lean scope is fully funded with "+money(A.gap)+" to spare. Full scope runs "+money(-B.gap)+" short - you would have to close that with your own cash, a facility increase, or by trimming scope. "+(dp>0?"Full scope does pay "+money(dp)+" more, so the question is whether that is worth funding "+money(-B.gap)+" out of pocket.":"Full scope also earns less at these sale prices, so there is no case for it.");}
+ else if(A.gap>=0&&B.gap>=0){msg="Both scopes are funded. Full scope earns "+money(dp)+" "+(dp>=0?"more":"less")+", so "+(dp>0?"go full if the sale price holds":"lean is the better risk-adjusted play")+".";}
+ else {msg="Neither scope is fully funded at these numbers. Lean is short "+money(-A.gap)+". Reduce scope, add cash, or push the lender for more facility before committing more subs.";}
+ v+='<div class="alert" style="margin-top:12px"><b>Bottom line</b><div style="margin-top:5px">'+msg+'</div></div>';
+ v+='<div class="muted" style="margin-top:8px">Sale prices are assumptions you control. Lean scope almost certainly does not appraise at the full-scope number - that gap is the real trade, not the construction cost. Draw math assumes '+money(N(S.fmeta.advanceLeft))+' advance and '+money(N(S.fmeta.selfLeft))+' self-funding still get absorbed, plus draw fees.</div>';
+ $("#scenVerdict").innerHTML=v;
+}
+function render(){renderOv();renderBud();renderExp();renderFund();renderSch();renderDeal();renderScen();}
 document.querySelectorAll("nav button").forEach(function(b){b.onclick=function(){document.querySelectorAll("nav button").forEach(function(x){x.classList.remove("on");});b.classList.add("on");document.querySelectorAll("section").forEach(function(s){s.classList.remove("on");});document.getElementById(b.dataset.t).classList.add("on");window.scrollTo(0,0);};});
 document.querySelectorAll("#budseg button").forEach(function(b){b.onclick=function(){document.querySelectorAll("#budseg button").forEach(function(x){x.classList.remove("on");});b.classList.add("on");budView=b.dataset.v;renderBud();};});
 load();render();
