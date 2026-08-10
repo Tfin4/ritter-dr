@@ -264,7 +264,36 @@ function renderScen(){
  v+='<div class="muted" style="margin-top:8px">Sale prices are assumptions you control. Lean scope almost certainly does not appraise at the full-scope number - that gap is the real trade, not the construction cost. Draw math assumes '+money(N(S.fmeta.advanceLeft))+' advance and '+money(N(S.fmeta.selfLeft))+' self-funding still get absorbed, plus draw fees.</div>';
  $("#scenVerdict").innerHTML=v;
 }
-function render(){renderOv();renderBud();renderExp();renderFund();renderSch();renderDeal();renderScen();}
+var DOORS=[
+{loc:"Front",sz:'36" x 80"',hand:"Right-hand inswing",spec:"Wood, modern, 4-5 glass lites",ro:'38" x 82.5"',ext:1,lo:800,hi:2600,o:0},
+{loc:"Back",sz:'32" x 80"',hand:"Left-hand inswing",spec:"Steel or fiberglass, utility",ro:'34" x 82.5"',ext:1,lo:300,hi:450,o:0},
+{loc:"Right side",sz:'32" x 80"',hand:"Right-hand inswing",spec:"Steel or fiberglass, utility",ro:'34" x 82.5"',ext:1,lo:300,hi:450,o:0},
+{loc:"Downstairs",sz:'60" x 80" double',hand:"Two 30 in leaves",spec:"2-panel primed, 5068 unit",ro:'62" x 83"',ext:0,lo:250,hi:400,o:0},
+{loc:"Interior",sz:'34" x 80"',hand:"Left-hand",spec:"2-panel primed, full box with trim",ro:'36" x 82.5"',ext:0,lo:130,hi:170,o:0},
+{loc:"Interior",sz:'34" x 80"',hand:"Right-hand",spec:"2-panel primed",ro:'36" x 82.5"',ext:0,lo:130,hi:170,o:0},
+{loc:"Interior",sz:'32" x 80"',hand:"Right-hand",spec:"2-panel primed",ro:'34" x 82.5"',ext:0,lo:120,hi:150,o:0},
+{loc:"Interior",sz:'32" x 80"',hand:"Left-hand",spec:"2-panel primed",ro:'34" x 82.5"',ext:0,lo:120,hi:150,o:0},
+{loc:"Interior",sz:'24" x 80"',hand:"Left-hand",spec:"2-panel primed",ro:'26" x 82.5"',ext:0,lo:110,hi:140,o:0},
+{loc:"Interior",sz:'18" x 80"',hand:"Left-hand",spec:"2-panel primed",ro:'20" x 82.5"',ext:0,lo:105,hi:135,o:0}];
+try{var dj=localStorage.getItem("ritter-doors");if(dj){var sv=JSON.parse(dj);DOORS.forEach(function(d,i){if(sv[i]!=null)d.o=sv[i];});}}catch(e){}
+function saveDoors(){try{localStorage.setItem("ritter-doors",JSON.stringify(DOORS.map(function(d){return d.o;})));}catch(e){}}
+function toggleDoor(i){DOORS[i].o=DOORS[i].o?0:1;saveDoors();renderDoors();}
+function renderDoors(){
+ var lo=0,hi=0,ord=0,leaves=0;
+ DOORS.forEach(function(d){lo+=d.lo;hi+=d.hi;if(d.o)ord++;leaves+=d.sz.indexOf("double")>-1?2:1;});
+ var hwLo=460,hwHi=790;
+ $("#drk").innerHTML=kpi("Openings",DOORS.length,leaves+" leaves total")+kpi("Ordered",ord+" of "+DOORS.length,ord==DOORS.length?"complete":DOORS.length-ord+" still to buy",ord==DOORS.length?"g":"w")+kpi("Material range",money(lo+hwLo)+" - "+money(hi+hwHi),"doors plus hardware")+kpi("Install not quoted","$825 - $1,375",leaves+" leaves at $75-125","c");
+ $("#drt").innerHTML='<tr><th>Opening</th><th>Size</th><th class="num">Est</th></tr>'+DOORS.map(function(d,i){
+  return '<tr onclick="toggleDoor('+i+')" style="cursor:pointer;opacity:'+(d.o?".55":"1")+'"><td><b>'+d.loc+'</b> '+(d.ext?'<span class="pill p-due">EXTERIOR</span>':'')+(d.o?' <span class="pill p-paid">ORDERED</span>':'')+'<div class="muted">'+d.hand+'</div><div class="muted">'+d.spec+'</div></td><td>'+d.sz+'<div class="muted">R.O. '+d.ro+'</div></td><td class="num">'+money(d.lo)+'<div class="muted">to '+money(d.hi)+'</div></td></tr>';
+ }).join("");
+ var ros={};DOORS.forEach(function(d){ros[d.ro]=(ros[d.ro]||0)+1;});
+ var rh="";for(var r2 in ros)rh+='<div class="row"><span>'+r2+'</span><b>'+ros[r2]+(ros[r2]>1?" openings":" opening")+'</b></div>';
+ $("#drro").innerHTML=rh+'<div class="muted" style="margin-top:8px">Prehung units need the full rough opening. Confirm Ed left jambs out and framing square before the order ships.</div>';
+ $("#drhw").innerHTML='<div class="row"><span>Entry handleset + deadbolt, keyed alike</span><b>3</b></div><div class="row"><span>Privacy sets (bed / bath)</span><b>TBD</b></div><div class="row"><span>Passage sets (closets)</span><b>TBD</b></div><div class="row"><span>Double door - dummy pair + roller catch, or passage + flush bolts</span><b>1 set</b></div><div class="muted" style="margin-top:8px">Matte black to carry the batten color down to the doors. Hinges ship with the prehung units - match the finish. Tell me which openings are baths and bedrooms and I will split privacy vs passage.</div>';
+ $("#drcost").innerHTML='<div class="row"><span>Front door</span><b>'+money(800)+' - '+money(2600)+'</b></div><div class="row"><span>Back + side</span><b>'+money(600)+' - '+money(900)+'</b></div><div class="row"><span>7 interior units</span><b>'+money(965)+' - '+money(1115)+'</b></div><div class="row"><span>Hardware</span><b>'+money(hwLo)+' - '+money(hwHi)+'</b></div><div class="row tot"><span>Material total</span><b>'+money(lo+hwLo)+' - '+money(hi+hwHi)+'</b></div><div class="row"><span>Budget available (Windows &amp; Doors + Trim &amp; Doors material)</span><b>'+money(6500)+'</b></div><div class="row tot"><span>Headroom at the high end</span><b class="'+((6500-(hi+hwHi))>=0?"up":"down")+'">'+money(6500-(hi+hwHi))+'</b></div>';
+ $("#drchk").innerHTML='<div class="row"><span>Jamb depth - 4-9/16 in for 2x4 walls, 6-9/16 in for 2x6</span><b>measure</b></div><div class="row"><span>All three exterior doors inswing</span><b>confirm</b></div><div class="row"><span>Which interiors are bath / bedroom for privacy locks</span><b>confirm</b></div><div class="row"><span>Door hanging labor - not in Adrian or Edward numbers</span><b class="down">get quote</b></div>'+'<div class="alert" style="margin-top:12px"><b>Front door trade-off</b><div style="margin-top:5px">Solid wood with 4-5 lites is the right warm note against white brick and black batten. But wood plus glass in Charlotte sun wants real overhang and a refinish every few years. A fiberglass unit with rift-oak texture gets most of the look, holds paint through the summers, and saves $1,000-1,800 - which closes a chunk of the scope gap.</div></div>';
+}
+function render(){renderOv();renderBud();renderExp();renderFund();renderSch();renderDeal();renderScen();renderDoors();}
 document.querySelectorAll("nav button").forEach(function(b){b.onclick=function(){document.querySelectorAll("nav button").forEach(function(x){x.classList.remove("on");});b.classList.add("on");document.querySelectorAll("section").forEach(function(s){s.classList.remove("on");});document.getElementById(b.dataset.t).classList.add("on");window.scrollTo(0,0);};});
 document.querySelectorAll("#budseg button").forEach(function(b){b.onclick=function(){document.querySelectorAll("#budseg button").forEach(function(x){x.classList.remove("on");});b.classList.add("on");budView=b.dataset.v;renderBud();};});
 load();render();
