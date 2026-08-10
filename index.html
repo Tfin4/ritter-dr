@@ -91,6 +91,16 @@ tr:last-child td{border-bottom:0}
 <div class="card"><h3>Assumptions</h3><div class="grid2" id="dfields"></div>
 <div class="btns"><button class="btn" onclick="resetDeal()">Reset to underwriting run</button></div></div>
 <div class="card"><h3>Comps in the ARV</h3><div id="comps"></div></div></section>
+<section id="scen"><div class="card"><h3>Scope scenarios</h3>
+<div class="muted" style="margin-bottom:10px">Two ways to finish this house. Change any number and both sides recalculate.</div>
+<div class="grid2">
+<div class="f"><label>Lean rehab $</label><input id="s_lr" inputmode="decimal"></div>
+<div class="f"><label>Lean sale price $</label><input id="s_la" inputmode="decimal"></div>
+<div class="f"><label>Full rehab $</label><input id="s_fr" inputmode="decimal"></div>
+<div class="f"><label>Full sale price $</label><input id="s_fa" inputmode="decimal"></div>
+</div></div>
+<div id="scenOut"></div>
+<div class="card"><h3>The read</h3><div id="scenVerdict"></div></div></section>
 <div class="card"><div class="muted">Edits save to this browser. Claude republishes this page after every project change.</div>
 <div class="btns"><button class="btn" onclick="expJSON()">Export data</button><button class="btn" onclick="resetAll()">Reset to published</button></div></div>
 </div><div class="toast" id="toast"></div>
