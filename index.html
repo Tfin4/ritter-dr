@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>7727 Ritter Dr - Command Center</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--plane:#f6f6f3;--card:#fff;--ink:#141414;--ink2:#4a4a48;--ink3:#8b8b86;--line:#e6e4dd;--good:#12946a;--goodbg:#e7f5ee;--warn:#a06a00;--warnbg:#fdf3e0;--crit:#c8342f;--critbg:#fbeae9;--info:#2a78d6;--infobg:#e8f1fb;--r:12px}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:var(--plane);color:var(--ink);font:15px/1.5 Inter,Arial,sans-serif;padding-bottom:50px}
+header{background:#141414;color:#fff;padding:16px 18px;position:sticky;top:0;z-index:20}
+header h1{margin:0;font-size:19px;font-weight:700}
+header .sub{color:#a9a9a4;font-size:11.5px;margin-top:3px}
+.wrap{max-width:980px;margin:0 auto;padding:14px}
+nav{display:flex;gap:6px;overflow-x:auto;padding:10px 14px;background:var(--plane);position:sticky;top:70px;z-index:19;border-bottom:1px solid var(--line)}
+nav button{flex:0 0 auto;border:1px solid var(--line);background:var(--card);color:var(--ink2);font:600 13px Inter,Arial;padding:8px 14px;border-radius:99px;cursor:pointer}
+nav button.on{background:#141414;color:#fff;border-color:#141414}
+section{display:none}section.on{display:block}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:14px}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:12px 13px}
+.kpi .l{font-size:10.5px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;color:var(--ink3)}
+.kpi .v{font-size:23px;font-weight:700;margin:3px 0 1px;letter-spacing:-.5px}
+.kpi .s{font-size:11.5px;color:var(--ink3)}
+.kpi.g .v{color:var(--good)}.kpi.w .v{color:var(--warn)}.kpi.c .v{color:var(--crit)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:14px;margin-bottom:14px}
+.card h3{margin:0 0 10px;font-size:14px;font-weight:700}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{text-align:left;font-size:10.5px;font-weight:600;letter-spacing:.4px;text-transform:uppercase;color:var(--ink3);padding:0 8px 7px;border-bottom:1px solid var(--line)}
+td{padding:9px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+tr:last-child td{border-bottom:0}
+.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.bar{height:6px;border-radius:99px;background:#eceae3;overflow:hidden;margin-top:5px}
+.bar i{display:block;height:100%;background:var(--good)}
+.bar.w i{background:var(--warn)}.bar.c i{background:var(--crit)}
+.pill{display:inline-block;font-size:10.5px;font-weight:700;padding:2px 8px;border-radius:99px}
+.p-due{background:var(--warnbg);color:var(--warn)}.p-paid{background:var(--goodbg);color:var(--good)}
+.p-quoted{background:var(--infobg);color:var(--info)}
+.tag{font-size:10px;font-weight:600;color:var(--ink3);border:1px solid var(--line);border-radius:4px;padding:1px 5px;margin-left:5px}
+.alert{background:var(--critbg);border:1px solid #f2d4d2;border-radius:var(--r);padding:11px 13px;margin-bottom:14px;font-size:12.5px;color:#5a3230}
+.alert b{color:var(--crit)}.alert ul{margin:6px 0 0;padding-left:17px}.alert li{margin:3px 0}
+.row{display:flex;justify-content:space-between;gap:12px;padding:7px 0;border-bottom:1px solid var(--line);font-size:13px}
+.row:last-child{border-bottom:0}.row span{color:var(--ink2)}.row b{font-variant-numeric:tabular-nums;white-space:nowrap;text-align:right}
+.row.tot{border-top:2px solid var(--ink);border-bottom:0;margin-top:5px;padding-top:9px;font-weight:700}
+.up{color:var(--good)}.down{color:var(--crit)}
+.f{display:flex;flex-direction:column;gap:3px;margin-bottom:9px}
+.f label{font-size:11px;font-weight:600;color:var(--ink3)}
+.f input,.f select{border:1px solid var(--line);border-radius:8px;padding:9px 10px;font:14px Inter,Arial;background:var(--card);color:var(--ink);width:100%}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.btn{border:1px solid var(--line);background:var(--card);color:var(--ink);font:600 13px Inter,Arial;padding:9px 15px;border-radius:8px;cursor:pointer}
+.btn.pri{background:#141414;color:#fff;border-color:#141414}
+.btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;margin-bottom:10px}
+.seg button{border:0;background:var(--card);color:var(--ink2);font:600 12px Inter,Arial;padding:7px 13px;cursor:pointer}
+.seg button.on{background:#141414;color:#fff}
+.muted{color:var(--ink3);font-size:12px}
+.del{border:0;background:none;color:var(--ink3);cursor:pointer;font-size:15px;padding:0 4px}
+.task{display:flex;gap:9px;align-items:flex-start;padding:7px 0;border-bottom:1px solid var(--line);font-size:13px}
+.task:last-child{border-bottom:0}.task input{margin-top:2px;width:17px;height:17px;flex:0 0 auto}
+.task.done span{color:var(--ink3);text-decoration:line-through}
+.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:#141414;color:#fff;padding:10px 18px;border-radius:99px;font-size:13px;opacity:0;pointer-events:none;transition:.25s;z-index:50}
+.toast.on{opacity:1}
+@media(max-width:560px){.grid2{grid-template-columns:1fr}td,th{padding-left:5px;padding-right:5px}.hs{display:none}}
+</style></head><body>
+<header><h1>7727 RITTER DR</h1><div class="sub" id="hsub">Charlotte NC 28270</div></header>
+<nav>
+<button class="on" data-t="ov">Overview</button><button data-t="bud">Budget</button>
+<button data-t="exp">Ledger</button><button data-t="fund">Funding</button>
+<button data-t="sch">Schedule</button><button data-t="deal">Deal</button>
+</nav>
+<div class="wrap">
+<section id="ov" class="on"><div class="kpis" id="ovk"></div><div id="alerts"></div>
+<div class="card"><h3>Where the money is going</h3><div id="topcats"></div></div>
+<div class="card"><h3>Labor vs material</h3><div id="lm"></div></div></section>
+<section id="bud"><div class="seg" id="budseg"><button class="on" data-v="all">All</button><button data-v="l">Labor</button><button data-v="m">Material</button></div>
+<div class="card"><table id="budt"></table></div></section>
+<section id="exp"><div class="card"><h3>Add an entry</h3>
+<div class="grid2"><div class="f"><label>Vendor</label><input id="e_v"></div>
+<div class="f"><label>Amount</label><input id="e_a" inputmode="decimal"></div></div>
+<div class="f"><label>Description</label><input id="e_d"></div>
+<div class="grid2"><div class="f"><label>Category</label><select id="e_c"></select></div>
+<div class="f"><label>Type</label><select id="e_k"><option>Labor</option><option>Material</option><option>Other</option></select></div></div>
+<div class="grid2"><div class="f"><label>Status</label><select id="e_s"><option>Due</option><option>Paid</option><option>Quoted</option></select></div>
+<div class="f"><label>Date</label><input id="e_dt" type="date"></div></div>
+<div class="btns"><button class="btn pri" onclick="addExp()">Add entry</button></div></div>
+<div class="card"><h3>Ledger</h3><table id="expt"></table></div></section>
+<section id="fund"><div class="kpis" id="fk"></div>
+<div class="card"><h3>Draw history</h3><div id="draws"></div></div>
+<div class="card"><h3>Lender rules</h3><div class="muted" style="line-height:1.7">Line items fund only when fully complete; partial work funds at percent complete. The closing advance must be absorbed before final draws disburse. Draw fee is $50 for the first four draws, then $100.</div></div></section>
+<section id="sch"><div class="kpis" id="sk"></div><div id="phases"></div></section>
+<section id="deal"><div class="kpis" id="dk"></div>
+<div class="card"><h3>Flip math</h3><div id="dout"></div></div>
+<div class="card"><h3>Assumptions</h3><div class="grid2" id="dfields"></div>
+<div class="btns"><button class="btn" onclick="resetDeal()">Reset to underwriting run</button></div></div>
+<div class="card"><h3>Comps in the ARV</h3><div id="comps"></div></div></section>
+<div class="card"><div class="muted">Edits save to this browser. Claude republishes this page after every project change.</div>
+<div class="btns"><button class="btn" onclick="expJSON()">Export data</button><button class="btn" onclick="resetAll()">Reset to published</button></div></div>
+</div><div class="toast" id="toast"></div>
+<script>
+var SEED={
+meta:{start:"2026-07-01",updated:"Aug 10, 2026"},
+budgets:{"Bathrooms":{l:11600,m:11600},"Exterior & Siding":{l:6250,m:6250},"Flooring":{l:4300,m:6400},"Framing & Structural":{l:3400,m:7000},"Demolition":{l:8000,m:0},"Roofing":{l:3900,m:3900},"Trim & Doors":{l:3300,m:4500},"Plumbing":{l:2500,m:2500},"Interior Paint":{l:2900,m:2900},"Drywall":{l:2700,m:2700},"Kitchen":{l:1500,m:3500},"Appliances":{l:0,m:3100},"Windows & Doors":{l:1000,m:2000},"Lighting & Fixtures":{l:1000,m:2000},"Electrical":{l:1400,m:1400},"Dumpster & Haul-off":{l:0,m:2500}},
+exp:[
+{d:"2026-08-09",v:"Gomez",t:"Plumbing - new shower and master bedroom",c:"Plumbing",k:"Labor",s:"Due",a:6250},
+{d:"2026-08-06",v:"Edward",t:"Demo, framing and subfloor fixes - add-on",c:"Framing & Structural",k:"Labor",s:"Paid",a:800},
+{d:"2026-08-06",v:"Home Depot (Matthews)",t:"Lumber - order H3602-291496",c:"Framing & Structural",k:"Material",s:"Paid",a:328.87},
+{d:"2026-08-05",v:"Home Depot (South Blvd)",t:"Studs + OSB subfloor - order H3646-282091",c:"Framing & Structural",k:"Material",s:"Paid",a:495.56},
+{d:"2026-08-01",v:"Hector",t:"Painting - labor, interior half",c:"Interior Paint",k:"Labor",s:"Due",a:3900},
+{d:"2026-08-01",v:"Hector",t:"Painting - labor, exterior half",c:"Exterior & Siding",k:"Labor",s:"Due",a:3900},
+{d:"2026-08-01",v:"",t:"Paint - material",c:"Interior Paint",k:"Material",s:"Due",a:700},
+{d:"2026-08-01",v:"",t:"Siding",c:"Exterior & Siding",k:"Other",s:"Due",a:4400},
+{d:"2026-08-01",v:"",t:"Gutters",c:"Exterior & Siding",k:"Other",s:"Due",a:800},
+{d:"2026-08-01",v:"Edward",t:"Demo",c:"Demolition",k:"Labor",s:"Due",a:2500},
+{d:"2026-08-01",v:"",t:"Dumpster - on site",c:"Dumpster & Haul-off",k:"Other",s:"Due",a:400},
+{d:"2026-07-23",v:"JAVA Tile (Adrian)",t:"Jack and Jill bathroom - labor",c:"Bathrooms",k:"Labor",s:"Quoted",a:3500},
+{d:"2026-07-23",v:"JAVA Tile (Adrian)",t:"Bathroom at end of house - labor",c:"Bathrooms",k:"Labor",s:"Quoted",a:4000},
+{d:"2026-07-23",v:"JAVA Tile (Adrian)",t:"LVP flooring install - 1,030 s/f",c:"Flooring",k:"Labor",s:"Quoted",a:3347},
+{d:"2026-07-23",v:"JAVA Tile (Adrian)",t:"14 stair steps - labor",c:"Flooring",k:"Labor",s:"Quoted",a:900},
+{d:"2026-07-23",v:"JAVA Tile (Adrian)",t:"Baseboard and 1/4 round - labor",c:"Trim & Doors",k:"Labor",s:"Quoted",a:1600},
+{d:"2026-07-23",v:"JAVA Tile (Adrian)",t:"Rails and 20 pickets - labor",c:"Trim & Doors",k:"Labor",s:"Quoted",a:875},
+{d:"2026-07-23",v:"",t:"Carpet install - labor",c:"Flooring",k:"Labor",s:"Quoted",a:600},
+{d:"2026-07-23",v:"",t:"Carpet - material (465 s/f)",c:"Flooring",k:"Material",s:"Quoted",a:575}],
+draws:[{n:"Advance at close",a:25000,net:15700,note:"Applied to closing balance. Lender later held back $5,000; $20,000 remains to absorb through future draws."},
+{n:"Draw 2 - approved 8/9/26",a:21800,net:16250,note:"Less $1,000 exterior paint holdback, $4,000 advance absorption, $500 self-funding absorption, $50 draw fee."}],
+fmeta:{facility:77200,advanceLeft:20000,selfLeft:1000,holdback:1000},
+phases:[
+{n:"Demo and structural",t:[["Kitchen wall and island prep",1],["Floors and carpet out",1],["Railing between kitchen and living",1],["Master bedroom wall (keep HVAC duct)",1],["All trim removed",1],["Living room panels out for drywall",1],["All 3 bathrooms demoed",1],["Subfloor repairs",1]]},
+{n:"Exterior",t:[["Old siding off",1],["Board and batten on gambrel",1],["Upper faces primed",1],["Exterior paint - white brick + black batten",0],["Gutters",0],["Roof repair",0]]},
+{n:"Rough-in",t:[["Plumbing - new shower and master (Gomez)",0],["Electrical rough",0],["Framing inspection",0]]},
+{n:"Drywall and paint",t:[["Drywall hang and finish",0],["Interior paint (Hector)",0]]},
+{n:"Finishes",t:[["Bathroom tile - Jack and Jill",0],["Bathroom tile - end of house",0],["LVP flooring 1,030 sf",0],["Carpet 465 sf",0],["Baseboard and 1/4 round",0],["Rails and 20 pickets",0],["Kitchen cabinets and backsplash",0],["Appliances",0],["Lighting and fixtures",0]]},
+{n:"Punch and list",t:[["Final clean",0],["Photos and staging",0],["List with agent",0]]}],
+deal:{purchase:411500,arv:679990,rehabOverride:60000,sqft:1950,months:3,ltc:100,rehabFin:100,rate:12.25,points:3,acqPct:2,sellPct:6,taxes:340,insurance:150,utilities:150,other:0,targetMargin:12,dutch:0},
+comps:[["437 Chadmore Dr",732500,1925,"6/27/25"],["509 Selkirk Pl",670000,1950,"4/27/26"],["7506 Kilcullen Dr",650000,0,"1/23/26"]],
+notes:["Plumbing is $1,250 over the $5,000 line - Gomez settled at $6,250. Offset comes from dropping Adrian's $2,875 master bath framing since Edward did it.","$1,000 exterior paint holdback releases when that scope completes.","Adrian's counter still open at $14,222.","Front and side stairs still unpriced by Adrian.","Roof and brick repair funded on the lender tracker but no cost captured here yet.","Siding $4,400 and gutters $800 still need a labor/material split."]};
+var KEY="ritter-dr-v1",S=null;
+function load(){try{var r=localStorage.getItem(KEY);S=r?JSON.parse(r):JSON.parse(JSON.stringify(SEED));}catch(e){S=JSON.parse(JSON.stringify(SEED));}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
+function N(x){var v=parseFloat(String(x==null?0:x).replace(/[^0-9.-]/g,""));return isNaN(v)?0:v;}
+function $(s){return document.querySelector(s);}
+function money(v){return "$"+Math.round(v).toLocaleString("en-US");}
+function kk(v){return v>=1000?"$"+(v/1000).toFixed(v>=10000?0:1)+"K":"$"+Math.round(v);}
+function esc(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];});}
+function toast(m){var t=$("#toast");t.textContent=m;t.classList.add("on");setTimeout(function(){t.classList.remove("on");},1800);}
+function budTotals(){var l=0,m=0;for(var c in S.budgets){l+=N(S.budgets[c].l);m+=N(S.budgets[c].m);}return{l:l,m:m,t:l+m};}
+function totals(){var paid=0,due=0,q=0;S.exp.forEach(function(e){var a=N(e.a);if(e.s=="Paid")paid+=a;else if(e.s=="Due")due+=a;else q+=a;});var b=budTotals();return{paid:paid,due:due,quoted:q,committed:paid+due+q,budget:b.t,bl:b.l,bm:b.m};}
+function catRoll(){var o={};for(var c in S.budgets)o[c]={b:N(S.budgets[c].l)+N(S.budgets[c].m),l:0,m:0,x:0,spent:0};
+S.exp.forEach(function(e){if(!o[e.c])o[e.c]={b:0,l:0,m:0,x:0,spent:0};var a=N(e.a);o[e.c].spent+=a;if(e.k=="Labor")o[e.c].l+=a;else if(e.k=="Material")o[e.c].m+=a;else o[e.c].x+=a;});return o;}
+function funding(){var net=0;S.draws.forEach(function(d){net+=N(d.net);});return{net:net,cash:net-totals().paid};}
+function dealCalc(){var d=S.deal,t=totals();var rehab=N(d.rehabOverride)||t.budget;var acq=N(d.purchase)*N(d.acqPct)/100;
+var base=N(d.purchase)*N(d.ltc)/100,rl=rehab*N(d.rehabFin)/100,loan=base+rl,pts=loan*N(d.points)/100;
+var interest=(base+(d.dutch?rl:rl*0.5))*N(d.rate)/100*N(d.months)/12;
+var carry=(N(d.taxes)+N(d.insurance)+N(d.utilities)+N(d.other))*N(d.months);
+var allIn=N(d.purchase)+acq+rehab+pts+interest+carry;var sell=N(d.arv)*N(d.sellPct)/100;var net=N(d.arv)-sell;var profit=net-allIn;
+return{rehab:rehab,acq:acq,loan:loan,pts:pts,interest:interest,carry:carry,allIn:allIn,sell:sell,net:net,profit:profit,margin:N(d.arv)?profit/N(d.arv)*100:0,cashIn:allIn-loan,roi:(allIn-loan)?profit/(allIn-loan)*100:0,psf:N(d.sqft)?rehab/N(d.sqft):0};}
+function progress(){var done=0,tot=0;S.phases.forEach(function(p){p.t.forEach(function(x){tot++;if(x[1])done++;});});return{done:done,tot:tot,pct:tot?done/tot*100:0};}
+function daysIn(){return Math.max(0,Math.round((Date.now()-new Date(S.meta.start).getTime())/86400000));}
+function kpi(l,v,s,c){return '<div class="kpi '+(c||"")+'"><div class="l">'+l+'</div><div class="v">'+v+'</div><div class="s">'+(s||"")+'</div></div>';}
+function renderOv(){var t=totals(),f=funding(),c=dealCalc();
+$("#ovk").innerHTML=kpi("Rehab budget",money(t.budget),kk(t.bl)+" labor / "+kk(t.bm)+" material")+kpi("Committed",money(t.committed),Math.round(t.committed/t.budget*100)+"% of budget")+kpi("Cash available",money(f.cash),"net draws less paid","g")+kpi("Owed",money(t.due),"invoices to pay","w")+kpi("Paid out",money(t.paid),"out the door")+kpi("Projected profit",money(c.profit),c.margin.toFixed(1)+"% margin",c.profit>=0?"g":"c");
+$("#alerts").innerHTML='<div class="alert"><b>Open items</b><ul>'+S.notes.map(function(n){return "<li>"+esc(n)+"</li>";}).join("")+"</ul></div>";
+var r=catRoll(),rows=[];for(var cat in r){if(r[cat].spent>0)rows.push([cat,r[cat]]);}rows.sort(function(a,b){return b[1].spent-a[1].spent;});
+$("#topcats").innerHTML="<table>"+rows.map(function(x){var p=x[1].b?x[1].spent/x[1].b*100:0,cl=p>100?"c":p>70?"w":"";
+return '<tr><td>'+esc(x[0])+'<div class="bar '+cl+'"><i style="width:'+Math.min(100,p)+'%"></i></div></td><td class="num">'+money(x[1].spent)+'<div class="muted">of '+money(x[1].b)+'</div></td></tr>';}).join("")+"</table>";
+var L=0,M=0,X=0;S.exp.forEach(function(e){var a=N(e.a);if(e.k=="Labor")L+=a;else if(e.k=="Material")M+=a;else X+=a;});var tt=L+M+X||1;
+$("#lm").innerHTML='<div class="row"><span>Labor</span><b>'+money(L)+' - '+Math.round(L/tt*100)+'%</b></div><div class="row"><span>Material</span><b>'+money(M)+' - '+Math.round(M/tt*100)+'%</b></div><div class="row"><span>Untagged</span><b>'+money(X)+' - '+Math.round(X/tt*100)+'%</b></div><div class="row tot"><span>Committed total</span><b>'+money(tt)+'</b></div>';
+$("#hsub").textContent="Day "+daysIn()+" - updated "+S.meta.updated+" - FinEquityGroup LLC";}
+var budView="all";
+function renderBud(){var r=catRoll(),rows=[];
+for(var c in S.budgets){var b=S.budgets[c],x=r[c];rows.push([c,budView=="l"?N(b.l):budView=="m"?N(b.m):N(b.l)+N(b.m),budView=="l"?x.l:budView=="m"?x.m:x.spent]);}
+rows.sort(function(a,b){return b[1]-a[1];});var tb=0,ta=0;
+var h='<tr><th>Category</th><th class="num">Actual</th><th class="num">Budget</th><th class="num hs">Left</th></tr>';
+h+=rows.map(function(x){tb+=x[1];ta+=x[2];var p=x[1]?x[2]/x[1]*100:0,cl=p>100?"c":p>70?"w":"",lf=x[1]-x[2];
+return '<tr><td>'+esc(x[0])+'<div class="bar '+cl+'"><i style="width:'+Math.min(100,p)+'%"></i></div><div class="muted">'+Math.round(p)+'% used</div></td><td class="num">'+money(x[2])+'</td><td class="num">'+money(x[1])+'</td><td class="num hs" style="color:'+(lf<0?"var(--crit)":"inherit")+'">'+(lf<0?"-":"")+money(Math.abs(lf))+'</td></tr>';}).join("");
+h+='<tr><td style="font-weight:700;border-top:2px solid #141414">Total</td><td class="num" style="font-weight:700;border-top:2px solid #141414">'+money(ta)+'</td><td class="num" style="font-weight:700;border-top:2px solid #141414">'+money(tb)+'</td><td class="num hs" style="font-weight:700;border-top:2px solid #141414">'+money(tb-ta)+'</td></tr>';
+$("#budt").innerHTML=h;}
+function renderExp(){var sel=$("#e_c");if(!sel.options.length){var o="";for(var c in S.budgets)o+='<option>'+esc(c)+'</option>';sel.innerHTML=o;}
+var list=S.exp.slice().sort(function(a,b){return a.d<b.d?1:-1;});
+$("#expt").innerHTML='<tr><th>Item</th><th class="num">Amount</th><th></th></tr>'+list.map(function(e){var i=S.exp.indexOf(e);
+return '<tr><td><b>'+esc(e.v||e.t)+'</b>'+(e.v?'<div class="muted">'+esc(e.t)+'</div>':'')+'<div style="margin-top:5px"><span class="pill p-'+e.s.toLowerCase()+'">'+e.s.toUpperCase()+'</span><span class="tag">'+esc(e.c)+'</span><span class="tag">'+esc(e.k)+'</span></div></td><td class="num"><b>'+money(N(e.a))+'</b><div class="muted">'+esc(e.d)+'</div></td><td><button class="del" onclick="cycle('+i+')">&#8635;</button><button class="del" onclick="delExp('+i+')">&times;</button></td></tr>';}).join("");}
+function addExp(){var a=N($("#e_a").value);if(!a){toast("Enter an amount");return;}
+S.exp.push({d:$("#e_dt").value||new Date().toISOString().slice(0,10),v:$("#e_v").value,t:$("#e_d").value,c:$("#e_c").value,k:$("#e_k").value,s:$("#e_s").value,a:a});
+$("#e_v").value="";$("#e_a").value="";$("#e_d").value="";save();render();toast("Entry added");}
+function delExp(i){S.exp.splice(i,1);save();render();toast("Removed");}
+function cycle(i){var o=["Quoted","Due","Paid"],e=S.exp[i];e.s=o[(o.indexOf(e.s)+1)%3];save();render();toast("Marked "+e.s);}
+function renderFund(){var f=funding(),m=S.fmeta,t=totals();
+$("#fk").innerHTML=kpi("Cash available",money(f.cash),"net draws less paid","g")+kpi("Facility left",money(m.facility),"remaining to draw")+kpi("Advance to absorb",money(m.advanceLeft),"before final draws","w")+kpi("Holdback",money(m.holdback),"releases on ext. paint","w");
+$("#draws").innerHTML=S.draws.map(function(d){return '<div class="row"><span><b>'+esc(d.n)+'</b><div class="muted">'+esc(d.note)+'</div></span><b>'+money(N(d.a))+'<div class="muted">'+money(N(d.net))+' net</div></b></div>';}).join("")+'<div class="row tot"><span>Net into account</span><b>'+money(f.net)+'</b></div><div class="row"><span>Less paid out</span><b>-'+money(t.paid)+'</b></div><div class="row tot"><span>Cash on hand</span><b class="up">'+money(f.cash)+'</b></div>';}
+function renderSch(){var p=progress();
+$("#sk").innerHTML=kpi("Progress",Math.round(p.pct)+"%",p.done+" of "+p.tot+" tasks")+kpi("Days in",daysIn(),"since "+S.meta.start)+kpi("Open tasks",p.tot-p.done,"across all phases","w");
+$("#phases").innerHTML=S.phases.map(function(ph,pi){var d=ph.t.filter(function(x){return x[1];}).length,pc=ph.t.length?d/ph.t.length*100:0;
+return '<div class="card"><h3>'+esc(ph.n)+' <span class="muted" style="font-weight:400">'+d+'/'+ph.t.length+'</span></h3><div class="bar" style="margin-bottom:9px"><i style="width:'+pc+'%"></i></div>'+ph.t.map(function(x,ti){return '<label class="task '+(x[1]?"done":"")+'"><input type="checkbox" '+(x[1]?"checked":"")+' onchange="tog('+pi+','+ti+')"><span>'+esc(x[0])+'</span></label>';}).join("")+'</div>';}).join("");}
+function tog(p,t){S.phases[p].t[t][1]=S.phases[p].t[t][1]?0:1;save();render();}
+var DF=[["purchase","Purchase price"],["arv","ARV / sale price"],["rehabOverride","Rehab budget in model"],["sqft","Heated sq ft"],["months","Hold (months)"],["rate","Interest rate %"],["points","Points %"],["ltc","Loan % of purchase"],["rehabFin","Loan % of rehab"],["acqPct","Acquisition costs %"],["sellPct","Selling costs %"],["taxes","Taxes / mo"],["insurance","Insurance / mo"],["utilities","Utilities / mo"],["targetMargin","Target margin %"]];
+function renderDeal(){var c=dealCalc(),d=S.deal;
+$("#dk").innerHTML=kpi("All-in cost",money(c.allIn),"purchase + rehab + carry")+kpi("Net profit",money(c.profit),c.margin.toFixed(1)+"% of sale price",c.profit>=0?"g":"c")+kpi("Cash-on-cash",Math.round(c.roi)+"%",money(c.cashIn)+" cash in")+kpi("Rehab / sq ft","$"+c.psf.toFixed(0),N(d.sqft)+" sf")+kpi("70% rule max",money(N(d.arv)*0.7-c.rehab),"max offer at 70% ARV");
+function row(l,v,cl){return '<div class="row"><span>'+l+'</span><b class="'+(cl||"")+'">'+v+'</b></div>';}
+$("#dout").innerHTML=row("Purchase price",money(N(d.purchase)))+row("Acquisition costs ("+d.acqPct+"%)",money(c.acq))+row("Rehab budget",money(c.rehab))+row("Loan points ("+d.points+"% of "+kk(c.loan)+")",money(c.pts))+row("Interest ("+d.months+" mo at "+d.rate+"%, non-Dutch)",money(c.interest))+row("Carrying costs",money(c.carry))+'<div class="row tot"><span>All-in cost</span><b>'+money(c.allIn)+'</b></div>'+row("Sale price (ARV)",money(N(d.arv)))+row("Selling costs ("+d.sellPct+"%)","-"+money(c.sell))+'<div class="row tot"><span>Net proceeds</span><b>'+money(c.net)+'</b></div><div class="row tot"><span>Profit</span><b class="'+(c.profit>=0?"up":"down")+'" style="font-size:19px">'+money(c.profit)+'</b></div>'+row("Margin vs "+d.targetMargin+"% target",c.margin.toFixed(1)+"% "+(c.margin>=N(d.targetMargin)?"clears":"short"),c.margin>=N(d.targetMargin)?"up":"down");
+$("#dfields").innerHTML=DF.map(function(f){return '<div class="f"><label>'+f[1]+'</label><input value="'+(d[f[0]]||"")+'" inputmode="decimal" onchange="setD(\''+f[0]+'\',this.value)"></div>';}).join("");
+$("#comps").innerHTML=S.comps.map(function(x){return '<div class="row"><span><b>'+esc(x[0])+'</b><div class="muted">'+(x[2]?x[2].toLocaleString()+" sf - ":"")+x[3]+'</div></span><b>'+money(x[1])+(x[2]?'<div class="muted">$'+Math.round(x[1]/x[2])+'/sf</div>':'')+'</b></div>';}).join("");}
+function setD(k2,v){S.deal[k2]=N(v);save();render();}
+function resetDeal(){S.deal=JSON.parse(JSON.stringify(SEED.deal));save();render();toast("Deal reset");}
+function resetAll(){if(confirm("Discard local edits and go back to the published version?")){localStorage.removeItem(KEY);load();render();toast("Reset");}}
+function expJSON(){var b=new Blob([JSON.stringify(S,null,2)],{type:"application/json"});var a=document.createElement("a");a.href=URL.createObjectURL(b);a.download="ritter-dr-data.json";a.click();}
+function render(){renderOv();renderBud();renderExp();renderFund();renderSch();renderDeal();}
+document.querySelectorAll("nav button").forEach(function(b){b.onclick=function(){document.querySelectorAll("nav button").forEach(function(x){x.classList.remove("on");});b.classList.add("on");document.querySelectorAll("section").forEach(function(s){s.classList.remove("on");});document.getElementById(b.dataset.t).classList.add("on");window.scrollTo(0,0);};});
+document.querySelectorAll("#budseg button").forEach(function(b){b.onclick=function(){document.querySelectorAll("#budseg button").forEach(function(x){x.classList.remove("on");});b.classList.add("on");budView=b.dataset.v;renderBud();};});
+load();render();
+</script></body></html>
