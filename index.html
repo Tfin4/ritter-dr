@@ -283,13 +283,13 @@ var DOORS=[
 {loc:"Front",sz:'36" x 80"',hand:"Right-hand inswing",spec:"Steves Regency modern 5-lite frosted, fiberglass, Autumn Wheat - ordered 8/18, arrives Aug 25-28",ro:'38" x 82.5"',ext:1,lo:733,hi:733,o:1},
 {loc:"Back",sz:'32" x 80"',hand:"Left-hand inswing",spec:"Steel or fiberglass, utility",ro:'34" x 82.5"',ext:1,lo:300,hi:450,o:0},
 {loc:"Right side",sz:'32" x 80"',hand:"Right-hand inswing",spec:"Masonite premium FULL LITE primed steel w/ brickmold - ordered 8/18, delivers Aug 19",ro:'34" x 82.5"',ext:1,lo:399,hi:399,o:1},
-{loc:"Downstairs",sz:'60" x 80" double',hand:"Two 30 in leaves",spec:"2-panel primed, 5068 unit",ro:'62" x 83"',ext:0,lo:250,hi:400,o:0},
-{loc:"Interior",sz:'34" x 80"',hand:"Left-hand",spec:"2-panel primed, full box with trim",ro:'36" x 82.5"',ext:0,lo:130,hi:170,o:0},
-{loc:"Interior",sz:'34" x 80"',hand:"Right-hand",spec:"2-panel primed",ro:'36" x 82.5"',ext:0,lo:130,hi:170,o:0},
-{loc:"Interior",sz:'32" x 80"',hand:"Right-hand",spec:"2-panel primed",ro:'34" x 82.5"',ext:0,lo:120,hi:150,o:0},
-{loc:"Interior",sz:'32" x 80"',hand:"Left-hand",spec:"2-panel primed",ro:'34" x 82.5"',ext:0,lo:120,hi:150,o:0},
-{loc:"Interior",sz:'24" x 80"',hand:"Left-hand",spec:"2-panel primed",ro:'26" x 82.5"',ext:0,lo:110,hi:140,o:0},
-{loc:"Interior",sz:'18" x 80"',hand:"Left-hand",spec:"2-panel primed",ro:'20" x 82.5"',ext:0,lo:105,hi:135,o:0}];
+{loc:"Downstairs",sz:'60" x 80" double',hand:"Two 30 in leaves",spec:"Carrara 2-panel, ball catch, 4-9/16 jamb, matte black - ordered 8/13",ro:'62" x 83"',ext:0,lo:240,hi:240,o:1},
+{loc:"Interior",sz:'34" x 80"',hand:"Left-hand",spec:"Carrara 2-panel prehung, matte black - ordered 8/13",ro:'36" x 82.5"',ext:0,lo:110,hi:110,o:1},
+{loc:"Interior",sz:'34" x 80"',hand:"Right-hand",spec:"Carrara 2-panel prehung, matte black - ordered 8/13",ro:'36" x 82.5"',ext:0,lo:110,hi:110,o:1},
+{loc:"Interior",sz:'32" x 80"',hand:"Right-hand",spec:"Carrara 2-panel prehung, matte black - ordered 8/13",ro:'34" x 82.5"',ext:0,lo:110,hi:110,o:1},
+{loc:"Interior",sz:'32" x 80"',hand:"Left-hand",spec:"Carrara 2-panel prehung, matte black - ordered 8/13",ro:'34" x 82.5"',ext:0,lo:110,hi:110,o:1},
+{loc:"Interior",sz:'24" x 80"',hand:"Left-hand",spec:"Carrara 2-panel prehung, matte black - ordered 8/13",ro:'26" x 82.5"',ext:0,lo:110,hi:110,o:1},
+{loc:"Interior",sz:'18" x 80"',hand:"Left-hand",spec:"Carrara 2-panel prehung, matte black - ordered 8/13",ro:'20" x 82.5"',ext:0,lo:110,hi:110,o:1}];
 try{var dj=localStorage.getItem("ritter-doors");if(dj){var sv=JSON.parse(dj);DOORS.forEach(function(d,i){if(sv[i]!=null)d.o=sv[i];});}}catch(e){}
 function saveDoors(){try{localStorage.setItem("ritter-doors",JSON.stringify(DOORS.map(function(d){return d.o;})));}catch(e){}}
 function toggleDoor(i){DOORS[i].o=DOORS[i].o?0:1;saveDoors();renderDoors();}
