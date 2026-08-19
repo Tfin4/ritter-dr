@@ -194,7 +194,7 @@ var r=catRoll(),rows=[];for(var cat in r){if(r[cat].spent>0)rows.push([cat,r[cat
 $("#topcats").innerHTML="<table>"+rows.map(function(x){var p=x[1].b?x[1].spent/x[1].b*100:0,cl=p>100?"c":p>70?"w":"";
 return '<tr><td>'+esc(x[0])+'<div class="bar '+cl+'"><i style="width:'+Math.min(100,p)+'%"></i></div></td><td class="num">'+money(x[1].spent)+'<div class="muted">of '+money(x[1].b)+'</div></td></tr>';}).join("")+"</table>";
 var L=0,M=0,X=0;S.exp.forEach(function(e){var a=N(e.a);if(e.k=="Labor")L+=a;else if(e.k=="Material")M+=a;else X+=a;});var tt=L+M+X||1;
-$("#lm").innerHTML='<div class="row"><span>Labor</span><b>'+money(L)+' - '+Math.round(L/tt*100)+'%</b></div><div class="row"><span>Material</span><b>'+money(M)+' - '+Math.round(M/tt*100)+'%</b></div><div class="row"><span>Untagged</span><b>'+money(X)+' - '+Math.round(X/tt*100)+'%</b></div><div class="row tot"><span>Committed total</span><b>'+money(tt)+'</b></div>';
+$("#lm").innerHTML='<div class="row"><span>Labor</span><b>'+money(L)+' - '+Math.round(L/tt*100)+'%</b></div><div class="row"><span>Material</span><b>'+money(M)+' - '+Math.round(M/tt*100)+'%</b></div><div class="row"><span>All-in / other</span><b>'+money(X)+' - '+Math.round(X/tt*100)+'%</b></div><div class="row tot"><span>Committed total</span><b>'+money(tt)+'</b></div>';
 $("#hsub").textContent="Day "+daysIn()+" - updated "+S.meta.updated+" - FinEquityGroup LLC";}
 var budView="all";
 function renderBud(){var r=catRoll(),rows=[];
