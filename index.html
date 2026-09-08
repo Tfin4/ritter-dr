@@ -228,7 +228,7 @@ $("#e_v").value="";$("#e_a").value="";$("#e_d").value="";save();render();toast("
 function delExp(i){S.exp.splice(i,1);save();render();toast("Removed");}
 function cycle(i){var o=["Quoted","Due","Paid"],e=S.exp[i];e.s=o[(o.indexOf(e.s)+1)%3];save();render();toast("Marked "+e.s);}
 function renderFund(){var f=funding(),m=S.fmeta,t=totals();
-$("#fk").innerHTML=kpi("Cash available",money(f.cash),"net draws less paid","g")+kpi("Facility left",money(m.facility),"remaining to draw")+kpi("Advance to absorb",money(m.advanceLeft),"before final draws","w")+kpi("Holdback",money(m.holdback),"releases on ext. paint","w");
+$("#fk").innerHTML=kpi("Cash available",money(f.cash),"net draws less paid","g")+kpi("Facility left",money(m.facility),"remaining to draw")+kpi("Advance to absorb",money(m.advanceLeft),"before final draws","w")+kpi("Holdback",money(m.holdback),"ext. paint holdback released","g");
 $("#draws").innerHTML=S.draws.map(function(d){return '<div class="row"><span><b>'+esc(d.n)+'</b><div class="muted">'+esc(d.note)+'</div></span><b>'+money(N(d.a))+'<div class="muted">'+money(N(d.net))+' net</div></b></div>';}).join("")+'<div class="row tot"><span>Net into account</span><b>'+money(f.net)+'</b></div><div class="row"><span>Less paid out</span><b>-'+money(t.paid)+'</b></div><div class="row tot"><span>Cash on hand</span><b class="up">'+money(f.cash)+'</b></div>';}
 function renderSch(){var p=progress();
 $("#sk").innerHTML=kpi("Progress",Math.round(p.pct)+"%",p.done+" of "+p.tot+" tasks")+kpi("Days in",daysIn(),"since "+S.meta.start)+kpi("Open tasks",p.tot-p.done,"across all phases","w");
